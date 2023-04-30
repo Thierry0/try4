@@ -1,0 +1,17 @@
+type TopicProgress @model @auth(rules: [{allow: owner}]) {
+  id: ID!
+  topic: String!
+  practicedCount: Int!
+  correctAnswers: Int!
+  examName: String!
+} 
+
+type UserProgress @model @auth(rules: [{allow: owner}]) {
+  id: ID!
+  dailyStreak: Int!
+  longestDailyStreak: Int!
+  mostCorrectResponsesPerDay: Int!
+  correctResponseStreak: Int!
+  longestCorrectResponseStreak: Int!
+  examName: String!
+}
