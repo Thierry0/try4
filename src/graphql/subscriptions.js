@@ -109,3 +109,45 @@ export const onDeleteUserProgress = /* GraphQL */ `
     }
   }
 `;
+export const onCreateKey = /* GraphQL */ `
+  subscription OnCreateKey(
+    $filter: ModelSubscriptionKeyFilterInput
+    $owner: String
+  ) {
+    onCreateKey(filter: $filter, owner: $owner) {
+      id
+      content
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const onUpdateKey = /* GraphQL */ `
+  subscription OnUpdateKey(
+    $filter: ModelSubscriptionKeyFilterInput
+    $owner: String
+  ) {
+    onUpdateKey(filter: $filter, owner: $owner) {
+      id
+      content
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const onDeleteKey = /* GraphQL */ `
+  subscription OnDeleteKey(
+    $filter: ModelSubscriptionKeyFilterInput
+    $owner: String
+  ) {
+    onDeleteKey(filter: $filter, owner: $owner) {
+      id
+      content
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;

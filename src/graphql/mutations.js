@@ -109,3 +109,45 @@ export const deleteUserProgress = /* GraphQL */ `
     }
   }
 `;
+export const createKey = /* GraphQL */ `
+  mutation CreateKey(
+    $input: CreateKeyInput!
+    $condition: ModelKeyConditionInput
+  ) {
+    createKey(input: $input, condition: $condition) {
+      id
+      content
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const updateKey = /* GraphQL */ `
+  mutation UpdateKey(
+    $input: UpdateKeyInput!
+    $condition: ModelKeyConditionInput
+  ) {
+    updateKey(input: $input, condition: $condition) {
+      id
+      content
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const deleteKey = /* GraphQL */ `
+  mutation DeleteKey(
+    $input: DeleteKeyInput!
+    $condition: ModelKeyConditionInput
+  ) {
+    deleteKey(input: $input, condition: $condition) {
+      id
+      content
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;

@@ -75,3 +75,32 @@ export const listUserProgresses = /* GraphQL */ `
     }
   }
 `;
+export const getKey = /* GraphQL */ `
+  query GetKey($id: ID!) {
+    getKey(id: $id) {
+      id
+      content
+      createdAt
+      updatedAt
+      owner
+    }
+  }
+`;
+export const listKeys = /* GraphQL */ `
+  query ListKeys(
+    $filter: ModelKeyFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listKeys(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        content
+        createdAt
+        updatedAt
+        owner
+      }
+      nextToken
+    }
+  }
+`;

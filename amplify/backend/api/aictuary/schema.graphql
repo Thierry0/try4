@@ -15,3 +15,8 @@ type UserProgress @model @auth(rules: [{allow: owner}]) {
   longestCorrectResponseStreak: Int!
   examName: String!
 }
+
+type key @model @auth(rules: [{allow: owner}]) {
+  id: ID!
+  content: String!
+} 

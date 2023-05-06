@@ -4,19 +4,9 @@
         <q-input v-model="openAI_API_Key" label="OpenAI API Key" outlined type="password" />
 
         <q-btn @click="getNewQuestion" label="Get New Question" color="primary" />
-        <h3>Topics Dashboard</h3>
-        <q-input v-model="newTopic" label="Add New Topic" outlined />
-        <q-btn @click="addTopic" label="Add Topic" color="primary" />
-        <q-list>
-            <q-item v-for="topic in topics" :key="topic.id">
-                <q-item-section>{{ topic.topic }} (Practiced: {{ topic.practicedCount }} | Correct Count: {{ topic.correctAnswers }})</q-item-section>
-                <q-item-section side>
-                    <q-btn @click="deleteTopic(topic.id)" color="negative" icon="delete" />
-                </q-item-section>
-            </q-item>
-        </q-list>
 
-        
+
+
         <div v-if="question">
             <div class="question-text">{{ question }}</div>
             <q-input v-model="answer" label="Your Answer" outlined type="textarea" autogrow />
@@ -26,6 +16,21 @@
             <h3>Feedback:</h3>
             <div class="feedback-text">{{ feedback }}</div>
         </div>
+
+
+        <h3>Topics Dashboard</h3>
+        <q-input v-model="newTopic" label="Add New Topic" outlined />
+        <q-btn @click="addTopic" label="Add Topic" color="primary" />
+        <q-list>
+            <q-item v-for="topic in topics" :key="topic.id">
+                <q-item-section>{{ topic.topic }} (Practiced: {{ topic.practicedCount }} | Correct Count: {{
+                    topic.correctAnswers }})</q-item-section>
+                <q-item-section side>
+                    <q-btn @click="deleteTopic(topic.id)" color="negative" icon="delete" />
+                </q-item-section>
+            </q-item>
+        </q-list>
+
     </div>
 </template>
   
@@ -35,11 +40,13 @@ import { API, graphqlOperation } from 'aws-amplify';
 import {
     listTopicProgresses,
     listUserProgresses,
+    listKeys
 } from '@/graphql/queries';
 import {
     createTopicProgress as createTopicProgressMutation,
     updateTopicProgress as updateTopicProgressMutation,
     updateUserProgress as updateUserProgressMutation,
+    createKey
 } from '@/graphql/mutations'
 import {
     deleteTopicProgress as deleteTopicProgressMutation,
@@ -69,6 +76,16 @@ export default {
     },
     methods: {
         async getNewQuestion() {
+            // Save the API key if it hasn't been saved already
+            if (!this.openAI_API_Key) {
+                alert("Please enter your OpenAI API Key.");
+                return;
+            } else {
+                const storedAPIKey = await this.fetchAPIKey();
+                if (storedAPIKey !== this.openAI_API_Key) {
+                    await this.saveAPIKey(this.openAI_API_Key);
+                }
+            }
             // Find the minimum practiced count among all topics
             const minPracticedCount = Math.min(...this.topics.map(topic => topic.practicedCount));
 
@@ -242,6 +259,27 @@ export default {
                 console.error('Error deleting topic:', error);
             }
         },
+        async fetchAPIKey() {
+            try {
+                const response = await API.graphql(graphqlOperation(listKeys));
+                const keys = response.data.listKeys.items;
+                return keys.length > 0 ? keys[0].content : null;
+            } catch (error) {
+                console.error('Error fetching API key:', error);
+            }
+        },
+
+        async saveAPIKey(apiKey) {
+            try {
+                const keyData = {
+                    content: apiKey,
+                };
+                await API.graphql(graphqlOperation(createKey, { input: keyData }));
+            } catch (error) {
+                console.error('Error saving API key:', error);
+            }
+        },
+
 
 
     },
@@ -251,6 +289,7 @@ export default {
             this.selectedExam = this.examOptions[0].value;
         }
         this.topics = await this.fetchAllTopics();
+        this.openAI_API_Key = await this.fetchAPIKey();
     },
 };
 </script>
