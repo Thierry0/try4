@@ -15,6 +15,7 @@
         <div v-if="feedback">
             <h3>Feedback:</h3>
             <div class="feedback-text">{{ feedback }}</div>
+            <q-btn @click="copyText" label="Copy topic context" color="primary" />
         </div>
 
 
@@ -51,7 +52,7 @@ import {
 import {
     deleteTopicProgress as deleteTopicProgressMutation,
 } from '@/graphql/mutations';
-
+import { copyToClipboard } from 'quasar'
 
 
 export default {
@@ -111,7 +112,7 @@ export default {
             const ExamName = this.selectedExam;
             const prompt = `I'm preparing for the Society of Actuaries ${ExamName} and need your help. I have answered the following question: '${this.question}'. Please evaluate my knowledge by providing feedback on my answer and refer to the grading scheme used in past SOA exams to determine the credit I would receive (none, small, significant, full). Please provide an explanation for the correctness of my answer. These answers will be programmatically parsed, can you make sure your feedback contains the following codes based on credit assigned? For none or small credits, your reply should include 'IncorrectFOSHO' and significant or full credit, your reply should include 'CorrectDUDE'. Thank you! Here is my answer: ${this.answer}.`;
 
-            const response = await this.sendRequestToOpenAI(prompt, 0.3);
+            const response = await this.sendRequestToOpenAI(prompt, 0);
 
             this.feedback = response.choices[0].message.content;
 
@@ -279,7 +280,33 @@ export default {
                 console.error('Error saving API key:', error);
             }
         },
+        async copyText() {
 
+            const fullQuery = `I am preparing for ${this.selectedExam}.
+I was given the following question to prepare for the exam: 
+"""
+${this.question}.
+"""
+Then I gave the following answer: 
+“”
+${this.answer}.
+"""
+Later, I received the following feedback from an AI model:
+"""
+${this.feedback}
+"""
+Please break the concepts presented in the question down for me, teach them to me.
+`;
+
+            console.log(fullQuery);
+            copyToClipboard(fullQuery)
+                .then(() => {
+                    alert("The topic context was successfully copied 🎉");
+                })
+                .catch(() => {
+                    alert("Something went wrong 😞");
+                })
+        }
 
 
     },
