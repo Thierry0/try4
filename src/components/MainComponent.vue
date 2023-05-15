@@ -100,7 +100,7 @@ export default {
             this.currentTopic = topic;
 
             const examName = this.selectedExam;
-            const prompt = `I am preparing for the ${examName} offered by the society of actuaries. To help me prepare for the exam, give me one ${topic} related question that can show up on the exam. You can match it with other topics you know are on the ${examName} to create a more complete question.`;
+            const prompt = `I am preparing for the ${examName} offered by the society of actuaries. To help me prepare for the exam, give me one ${topic} related question that can show up on the exam. You can match it with other topics you know are on the ${examName} or the study manuals that prepare students for the exam to create a more complete question.`;
 
             const response = await this.sendRequestToOpenAI(prompt, 0.6);
 
@@ -110,7 +110,7 @@ export default {
 
         async submitAnswer() {
             const ExamName = this.selectedExam;
-            const prompt = `I'm preparing for the Society of Actuaries ${ExamName} and need your help. I have answered the following question: '${this.question}'. Please evaluate my knowledge by providing feedback on my answer and refer to the grading scheme used in past SOA exams to determine the credit I would receive (none, small, significant, full). Please provide an explanation for the correctness of my answer. These answers will be programmatically parsed, can you make sure your feedback contains the following codes based on credit assigned? For none or small credits, your reply should include 'IncorrectFOSHO' and significant or full credit, your reply should include 'CorrectDUDE'. Thank you! Here is my answer: ${this.answer}.`;
+            const prompt = `I'm preparing for the Society of Actuaries ${ExamName} and need your help. I have answered the following question: '${this.question}'. Please evaluate my knowledge by providing feedback on my answer and refer to the grading scheme used in past SOA exams to determine the credit I would receive (none, small, significant, full). Please provide an explanation for the correctness of my answer based on past SOA exams version of this exam as well as study manuals intended to prepare students for this exam. These answers will be programmatically parsed, can you make sure your feedback contains the following codes based on credit assigned? For none or small credits, your reply should include 'IncorrectFOSHO' and significant or full credit, your reply should include 'CorrectDUDE'. Thank you! Here is my answer: ${this.answer}.`;
 
             const response = await this.sendRequestToOpenAI(prompt, 0);
 
@@ -295,7 +295,7 @@ Later, I received the following feedback from an AI model:
 """
 ${this.feedback}
 """
-Please break the concepts presented in the question down for me, teach them to me.
+Please break the concepts presented in the question down for me, teach them to me making sure your explanations are factual relative to study manuals intended to prepare for the exam.
 `;
 
             console.log(fullQuery);
